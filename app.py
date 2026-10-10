@@ -1,148 +1,291 @@
 
-import streamlit as st
-import pandas as pd
-import numpy as np
+export interface ExplodedLayer {
+  layerNumber: number;
+  partName: string;
+  materialSpec: string;
+  thicknessMm: string;
+  toleranceMm: string;
+  functionRole: string;
+  visualColor: string;
+  explodedOffsetPx?: number;
+}
 
-# --- Oldal konfiguráció ---
-st.set_page_config(
-    page_title="FUTUREVERSION & GUME - Master Opportunity Engine (1-100)",
-    page_icon="🚀",
-    layout="wide"
-)
+export interface ExplodedProduct {
+  id: number;
+  number: number;
+  name: string;
+  category: 'water' | 'energy' | 'biomaterials' | 'packaging' | 'sensors' | 'smart_fabrics';
+  drawingCode: string; // pl. "ISO-128-FV-076"
+  materials: string[];
+  mechanism: string;
+  layers: ExplodedLayer[];
+  assemblyInstructions: string[];
+  unitCostHuf: number;
+  targetPriceHuf: number;
+}
 
-# --- Stílusok ---
-st.markdown("""
-    <style>
-    .main-title { font-size: 2.3rem; font-weight: bold; color: #1E3A8A; margin-bottom: 0px; }
-    .sub-title { font-size: 1.1rem; color: #4B5563; margin-bottom: 20px; }
-    .card { background-color: #F8FAFC; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #2563EB; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .step-box { background-color: #EFF6FF; padding: 12px 15px; border-radius: 6px; border: 1px solid #BFDBFE; margin-bottom: 8px; font-family: monospace; }
-    .highlight { background-color: #FEF3C7; padding: 15px; border-radius: 8px; border: 1px solid #FCD34D; margin-top: 10px; }
-    </style>
-""", unsafe_allow_html=True)
+export interface AIDiagramResponse {
+  productNumber: number;
+  productName: string;
+  cadDrawingTitle: string;
+  explodedLayers: ExplodedLayer[];
+import express from 'express';
+import { GoogleGenAI } from '@google/genai';
 
-st.markdown('<div class="main-title">🚀 FUTUREVERSION & GUME Master Opportunity Engine (1-100)</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Minden egyes koncepció robbantott műszaki rajza, tételes BOM-ja, gyártási folyamata és pénzügyi terve</div>', unsafe_allow_html=True)
-st.write("---")
+const app = express();
+app.use(express.json());
 
-# --- Generátor mind a 100 koncepcióhoz ---
-platforms = [
-    "Víz & Mezőgazdaság Platform", 
-    "Energia & Hő Platform", 
-    "Hulladék -> Anyag Platform", 
-    "Szűrés & Tisztítás Platform", 
-    "Szenzor & IoT Platform", 
-    "Intelligencia & SaaS Platform"
-]
+const ai = new GoogleGenAI(); // GOOGLE_GENAI_API_KEY a környezeti változókból
 
-master_100_db = {}
-for i in range(1, 101):
-    plat = platforms[(i - 1) % len(platforms)]
-    key = f"#{i}. FutureVersion Concept {i} ({plat})"
-    cost = 3000 + (i * 150) % 15000
-    price = cost * 3.5
-    profit = price - cost
-    
-    master_100_db[key] = {
-        "platform": plat,
-        "tagline": f"Magas hozzáadott értékű garázsprojekt a(z) {plat} területéről",
-        "overview": f"A GUME v7.0 adatai alapján ez a koncepció a növekvő globális keresletre épít, minimalizált tőkeigénnyel és magas bruttó marginnal.",
-        "image_url": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop",
-        "exploded": [
-            f"RÉTEG 1: Külső robusztus védelem (ASA filament / kompozit burkolat).",
-            f"RÉTEG 2: Belső interfész / energiamodul (LiFePO4 akku + napelem / táp).",
-            f"RÉTEG 3: Fő vezérlőegység (ESP32 / MCU modul egyedi firmware-rel).",
-            f"RÉTEG 4: Munkavégző aktív elem / szenzor / speciális rostmátrix."
-        ],
-        "manufacturing_steps": [
-            "1. CAD tervezés és prototípus alkatrészek 3D nyomtatása / előkészítése.",
-            "2. Elektronikai modulok, szenzorok vagy rostkompozitok összeállítása.",
-            "3. Vízálló tokozás, műgyantás kiöntés vagy termikus préselés.",
-            "4. GUME firmware telepítés, kalibrálás és minőségellenőrzés."
-        ],
-        "required_machines": ["Bambu Lab A1 3D nyomtató", "Forrasztóállomás", "Lapprés / Kézi szerszámok"],
-        "bom": [
-            {"Alkatrész / Anyag": "Mikrokontroller / Fő modul", "Mennyiség": "1 db", "Beszerzési Hely": "TME Magyarország", "Ár (HUF)": int(cost * 0.3)},
-            {"Alkatrész / Anyag": "Speciális alapanyag / Váz", "Mennyiség": "1 egység", "Beszerzési Hely": "3DJake / Helyi beszállító", "Ár (HUF)": int(cost * 0.4)},
-            {"Alkatrész / Anyag": "Kötőelemek / Kábelek", "Mennyiség": "1 csomag", "Beszerzési Hely": "Helyi szaküzlet", "Ár (HUF)": int(cost * 0.3)}
-        ],
-        "total_cost": f"~{cost:,} Ft",
-        "selling_price": f"~{int(price):,} Ft",
-        "profit": f"~{int(profit):,} Ft",
-        "target_buyers": ["Középvállalkozások", "Szakipari műhelyek", "Agrárgazdaságok"],
-        "risks": ["Alapanyag áringadozás", "Helyi piaci edukáció szükségessége"],
-        "partners": ["MATE", "BME", "Corvinus Egyetem"]
+// AI Műszaki Robbantott Rajz & Diagram Generátor Végpont
+app.post('/api/generate-exploded-diagram', async (req, res) => {
+  try {
+    const { productNumber, productName, materials, mechanism, customStyle } = req.body;
+
+    const systemInstruction = `
+Te egy vezető ISO 128 gépész- és biomérnök tervező vagy, aki robbantott műszaki rajzokat (Exploded Engineering Blueprint) tervez.
+Készíts precíz robbantott réteg-lebontást és egy közvetlenül megjeleníthető, érvényes SVG műszaki rajzot!
+
+Kimeneti JSON séma:
+{
+  "productNumber": number,
+  "productName": string,
+  "cadDrawingTitle": string,
+  "explodedLayers": [
+    {
+      "layerNumber": number,
+      "partName": string,
+      "materialSpec": string,
+      "thicknessMm": string,
+      "toleranceMm": string,
+      "functionRole": string,
+      "visualColor": string
     }
+  ],
+  "operatingMechanism": string,
+  "fluidOrThermalFlow": string,
+  "fastenersAndAssembly": string,
+  "svgDiagramCode": string, // Teljes <svg viewBox="0 0 800 600">...</svg> mérnöki rajz sötétkék blueprint háttérrel (#0f172a), cián vonalakkal (#38bdf8), szaggatott robbantási tengellyel (dasharray) és feliratokkal
+  "engineerNotes": string
+}`;
 
-# --- Sidebar Navigáció ---
-st.sidebar.header("🌐 Master Portfólió (1-100)")
-selected_item = st.sidebar.selectbox("Válassz Koncepciót (#1 - #100):", list(master_100_db.keys()))
+    const prompt = `Készíts robbantott műszaki rajzot és diagramot az alábbi termékhez:
+- Sorszám: #${productNumber}
+- Név: ${productName}
+- Alapanyagok: ${Array.isArray(materials) ? materials.join(', ') : materials}
+- Működési mechanizmus: ${mechanism}
+- Stílus: ${customStyle || 'ISO 128 CAD blueprint, robbantott rétegekkel és méretezéssel'}`;
 
-item = master_100_db[selected_item]
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.8-flash',
+      contents: prompt,
+      config: {
+        systemInstruction,
+        responseMimeType: 'application/json',
+        temperature: 0.35,
+      },
+    });
 
-st.markdown(f"## 🔬 Projekt Elemzés: **{selected_item}**")
-st.markdown(f"**Platform:** `{item['platform']}`")
-st.markdown(f"> *{item['tagline']}*")
-st.write(item['overview'])
-st.write("---")
+    const parsedData = JSON.parse(response.text || '{}');
+    res.json(parsedData);
+  } catch (err: any) {
+    console.error('Hiba a robbantott diagram generálásakor:', err);
+    res.status(500).json({ error: 'AI generálási hiba', details: err?.message });
+  }
+});
+import React, { useState } from 'react';
+import { ExplodedProduct, AIDiagramResponse } from '../types/explodedDiagram';
 
-# Kétoszlopos elrendezés
-col1, col2 = st.columns([1, 1])
+interface Props {
+  products: ExplodedProduct[];
+}
 
-with col1:
-    st.markdown("### 📸 Kész Termék Vizuális Kép")
-    st.image(item["image_url"], caption=f"{selected_item} - Kész termék vizuális koncepció", use_container_width=True)
+export const ExplodedGallery100View: React.FC<Props> = ({ products }) => {
+  const [selectedProduct, setSelectedProduct] = useState<ExplodedProduct>(products[0]);
+  const [explodedDistance, setExplodedDistance] = useState<number>(65); // Szétszerelési távolság (px)
+  const [aiDiagram, setAiDiagram] = useState<AIDiagramResponse | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-with col2:
-    st.markdown("### 🧱 Robbantott Műszaki Szerkezet (Rétegrend)")
-    st.write("A fizikai prototípus belső rétegei:")
-    for layer in item["exploded"]:
-        st.markdown(f'<div class="step-box">⚙️ {layer}</div>', unsafe_allow_html=True)
+  // Gemini API hívás a kiválasztott termékre
+  const handleGenerateAiDiagram = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/generate-exploded-diagram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productNumber: selectedProduct.number,
+          productName: selectedProduct.name,
+          materials: selectedProduct.materials,
+          mechanism: selectedProduct.mechanism,
+        }),
+      });
+      const data = await res.json();
+      setAiDiagram(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-st.write("---")
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 bg-slate-950 text-slate-100">
+      {/* 1. Bal oldali termékválasztó lista (1-100) */}
+      <div className="h-[800px] overflow-y-auto space-y-2 pr-2 border-r border-slate-800">
+        <h2 className="text-xl font-bold text-cyan-400">100 Termék Portfólió</h2>
+        {products.map((p) => (
+          <button
+            key={p.id}
+            onClick={() => { setSelectedProduct(p); setAiDiagram(null); }}
+            className={`w-full text-left p-3 rounded-lg border transition ${
+              selectedProduct.id === p.id 
+                ? 'bg-cyan-950/60 border-cyan-500 text-cyan-300' 
+                : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+            }`}
+          >
+            <div className="text-xs text-cyan-400 font-mono">#{p.number} • {p.drawingCode}</div>
+            <div className="font-semibold text-sm">{p.name}</div>
+          </button>
+        ))}
+      </div>
 
-# Fülek
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "⚙️ Gyártási Folyamat",
-    "📦 Tételes BOM & Költségek", 
-    "💰 Pénzügy & Árazás",
-    "🎯 Célpiac & Kockázatok", 
-    "🤝 K+F Partnerek"
-])
+      {/* 2. Középső Interaktív SVG Rajzasztal (Robbantott rétegekkel) */}
+      <div className="lg:col-span-2 flex flex-col gap-4">
+        {/* Vezérlősáv */}
+        <div className="flex items-center justify-between bg-slate-900 p-4 rounded-xl border border-slate-800">
+          <div>
+            <h3 className="font-bold text-lg text-white">{selectedProduct.name}</h3>
+            <span className="text-xs text-slate-400 font-mono">{selectedProduct.drawingCode}</span>
+          </div>
 
-with tab1:
-    st.markdown("### 🛠️ Gyártási Lépések")
-    for step in item["manufacturing_steps"]:
-        st.markdown(f'<div class="step-box">📌 {step}</div>', unsafe_allow_html=True)
-    st.markdown("### 🧰 Szükséges Gépek")
-    for machine in item["required_machines"]:
-        st.markdown(f"- 🔧 {machine}")
+          <div className="flex items-center gap-4">
+            <label className="text-xs text-slate-400">Robbantási távolság:</label>
+            <input
+              type="range"
+              min="0"
+              max="150"
+              value={explodedDistance}
+              onChange={(e) => setExplodedDistance(Number(e.target.value))}
+              className="accent-cyan-400"
+            />
+            <button
+              onClick={handleGenerateAiDiagram}
+              disabled={isLoading}
+              className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg text-sm font-semibold hover:from-cyan-500 hover:to-blue-500 transition shadow"
+            >
+              {isLoading ? 'AI Tervezés...' : '✨ Gemini AI Műszaki Rajz'}
+            </button>
+          </div>
+        </div>
 
-with tab2:
-    st.markdown("### 📋 Tételes BOM (Bill of Materials)")
-    st.write(f"**Becsült prototípus költség:** {item['total_cost']}")
-    bom_df = pd.DataFrame(item["bom"])
-    st.dataframe(bom_df, use_container_width=True, hide_index=True)
+        {/* CAD Canvas */}
+        <div className="relative h-[600px] bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex items-center justify-center">
+          {aiDiagram?.svgDiagramCode ? (
+            <div 
+              className="w-full h-full p-4 flex items-center justify-center"
+              dangerouslySetInnerHTML={{ __html: aiDiagram.svgDiagramCode }} 
+            />
+          ) : (
+            /* Parametrikus réteg-renderelő */
+            <svg viewBox="0 0 800 600" className="w-full h-full select-none">
+              <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" strokeWidth="0.8" />
+                </pattern>
+              </defs>
+              <rect width="800" height="600" fill="#0b1329" />
+              <rect width="800" height="600" fill="url(#grid)" />
 
-with tab3:
-    st.markdown("### 💳 Pénzügyi Terv & Profitabilitás")
-    col_a, col_b, col_c = st.columns(3)
-    col_a.metric("Prototípus Költség", item['total_cost'])
-    col_b.metric("Ajánlott Eladási Ár", item['selling_price'])
-    col_c.metric("Becsült Profit", item['profit'])
+              {/* Szaggatott robbantási tengely */}
+              <line x1="400" y1="50" x2="400" y2="550" stroke="#0284c7" strokeWidth="1.5" strokeDasharray="8 4" opacity="0.6" />
 
-with tab4:
-    st.markdown("### 🎯 Célpiac")
-    for buyer in item["target_buyers"]:
-        st.markdown(f"- 👤 {buyer}")
-    st.markdown("### ⚠️ Főbb Kockázatok")
-    for risk in item["risks"]:
-        st.markdown(f"- 🛑 {risk}")
+              {/* Dinamikusan eltolt robbantott rétegek */}
+              {selectedProduct.layers.map((layer, idx) => {
+                const total = selectedProduct.layers.length;
+                const offset = (idx - total / 2) * explodedDistance;
+                const y = 300 + offset;
 
-with tab5:
-    st.markdown("### 🤝 Ajánlott K+F Partnerek")
-    for partner in item["partners"]:
-        st.markdown(f"- 🏛️ {partner}")
+                return (
+                  <g key={layer.layerNumber} className="transition-all duration-300 ease-out">
+                    <rect
+                      x="250"
+                      y={y - 18}
+                      width="300"
+                      height="36"
+                      rx="6"
+                      fill={layer.visualColor || '#0369a1'}
+                      stroke="#38bdf8"
+                      strokeWidth="1.5"
+                      opacity="0.85"
+                    />
+                    <text x="400" y={y + 5} fill="#ffffff" fontSize="13" textAnchor="middle" fontWeight="bold">
+                      [{layer.layerNumber}] {layer.partName} ({layer.thicknessMm})
+                    </text>
+                    {/* Vezetővonal és felirat */}
+                    <line x1="550" y1={y} x2="630" y2={y} stroke="#38bdf8" strokeWidth="1" strokeDasharray="3 3" />
+                    <text x="635" y={y + 4} fill="#94a3b8" fontSize="11" fontFamily="monospace">
+                      {layer.materialSpec}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+  operatingMechanism: string;
+  fluidOrThermalFlow: string;
+  fastenersAndAssembly: string;
+  svgDiagramCode: string; // ISO 128 CAD kompatibilis SVG kód
+  engineerNotes: string;
+}
+import os
+import json
+import requests
+from google import genai
+from google.genai import types
 
-st.markdown("---")
-st.success("✨ Mind a 100 ötlet integrálva van a rendszerbe! Töltsd fel a frissített `app.py`-t a GitHub repódba, és a Streamlit azonnal betölti az összes koncepciót.")
+class ProductExplodedBlueprintEngine:
+    """100 Termék Robbantott CAD & Műszaki Rajz Generátor Motor"""
+
+    def __init__(self, api_key: str = None):
+        self.client = genai.Client(api_key=api_key or os.getenv("GEMINI_API_KEY"))
+
+    def generate_blueprint_spec(self, product_no: int, name: str, materials: list, mechanism: str) -> dict:
+        prompt = f"""
+Készíts ISO 128 szabvány szerinti robbantott műszaki rajzot:
+- Termék #{product_no}: {name}
+- Alapanyagok: {', '.join(materials)}
+- Működési mechanizmus: {mechanism}
+"""
+        response = self.client.models.generate_content(
+            model="gemini-3.8-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                system_instruction="Te egy vezető gépészmérnök vagy. Válaszolj szigorúan JSON-ben {productNumber, cadTitle, layers: [{name, material, thickness, role}], svgDiagramCode}.",
+                response_mime_type="application/json",
+                temperature=0.3
+            )
+        )
+        return json.loads(response.text)
+
+    def export_svg(self, blueprint_data: dict, output_filepath: str):
+        svg_code = blueprint_data.get("svgDiagramCode", "")
+        with open(output_filepath, "w", encoding="utf-8") as f:
+            f.write(svg_code)
+        print(f"✅ Mentve: {output_filepath}")
+
+# Használati példa:
+if __name__ == "__main__":
+    engine = ProductExplodedBlueprintEngine()
+    data = engine.generate_blueprint_spec(
+        product_no=76,
+        name="MycoComposite Akusztikai Panel",
+        materials=["Gombafonal micélium", "Mezőgazdasági biomassza", "Természetes viasz bevonat"],
+        mechanism="Porózus szálmátrix akusztikai abszorpcióval és mikrogomba-kötéssel"
+    )
+    engine.export_svg(data, "mycocomposite_exploded.svg")
