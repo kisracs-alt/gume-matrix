@@ -1,11 +1,10 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
 
 # --- Oldal konfiguráció ---
 st.set_page_config(
-    page_title="FUTUREVERSION & GUME - Prototípus & Vizuális Labor",
+    page_title="FUTUREVERSION & GUME - Prototípus & Gyártási Labor",
     page_icon="⚙️",
     layout="wide"
 )
@@ -16,27 +15,40 @@ st.markdown("""
     .main-title { font-size: 2.2rem; font-weight: bold; color: #1E3A8A; margin-bottom: 0px; }
     .sub-title { font-size: 1.1rem; color: #4B5563; margin-bottom: 20px; }
     .card { background-color: #F8FAFC; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #2563EB; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .exploded-layer { background-color: #EFF6FF; padding: 10px 15px; border-radius: 6px; border: 1px solid #BFDBFE; margin-bottom: 8px; font-family: monospace; }
+    .step-box { background-color: #EFF6FF; padding: 12px 15px; border-radius: 6px; border: 1px solid #BFDBFE; margin-bottom: 8px; }
     .highlight { background-color: #FEF3C7; padding: 15px; border-radius: 8px; border: 1px solid #FCD34D; margin-top: 10px; }
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-title">⚙️ FUTUREVERSION Vizuális Garázs Labor & Műszaki Tervtár</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Robbantott műszaki rajzok, kész termékek fotói, tételes BOM és konkurens-analízis</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">⚙️ FUTUREVERSION Garázs Labor & Gyártási Útmutató</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Robbantott műszaki tervek, lépésről lépésre követhető gyártási folyamatok, BOM és piaci elemzés</div>', unsafe_allow_html=True)
 st.write("---")
 
-# --- Prototípus Adatbázis Képekkel és Vizuális Adatokkal ---
+# --- Prototípus Adatbázis Gyártási Folyamatokkal és Műszaki Adatokkal ---
 prototypes = {
     "1. Farm Water Intelligence (IoT & Ag-SaaS)": {
         "tagline": "Intelligens öntözés-vezérlő szenzorhálózat + GUME meteorológiai predikció",
         "overview": "Nem egyszerű talajnedvességmérő. Az eszköz a helyi talajadatokat a GUME globális időjárási és párolgási adataival kombinálva kiszámolja, hogy mikor és mennyi vizet kell kijuttatni.",
         "image_url": "https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=800&auto=format&fit=crop",
         "exploded": [
-            "LÉREG 1: Külső UV-álló időjárásálló ház (ASA filament, 3D nyomtatva - Bambu A1)",
-            "LÉREG 2: Napelemes tápegység + LiFePO4 akkumulátor modul",
-            "LÉREG 3: ESP32-WROOM-32E mikrokontroller & LoRa/Wi-Fi adómodul",
-            "LÉREG 4: Kapacitív talajnedvesség- és hőmérséklet-szenzor szúrótüske",
-            "LÉREG 5: Opcionális motoros szelep vezérlő relé kimenet"
+            "RÉTEG 1: Külső UV-álló időjárásálló ház (ASA filament, 3D nyomtatva - Bambu A1)",
+            "RÉTEG 2: Napelemes tápegység + LiFePO4 akkumulátor modul",
+            "RÉTEG 3: ESP32-WROOM-32E mikrokontroller & LoRa/Wi-Fi adómodul",
+            "RÉTEG 4: Kapacitív talajnedvesség- és hőmérséklet-szenzor szúrótüske",
+            "RÉTEG 5: Opcionális motoros szelep vezérlő relé kimenet"
+        ],
+        "manufacturing_steps": [
+            "1. Ház megtervezése CAD-ben és nyomtatása Bambu A1 3D nyomtatón (ASA filament, idojárásálló).",
+            "2. ESP32 modul és a szenzorok kábelezése, forrasztása a prototípus panelre.",
+            "3. Vízálló műgyanta kiöntés biztosítása az elektronikai csatlakozásoknál.",
+            "4. GUME IoT firmware (Edge kliens) flashelése a mikrokontrollerre.",
+            "5. Kalibrálás laboratóriumi körülmények között ismert nedvességtartalmú talajban."
+        ],
+        "required_machines": [
+            "Bambu Lab A1 3D nyomtató",
+            "Forrasztóállomás és multiméter",
+            "Műgyanta kiöntő szett",
+            "Programozó kábelek / tesztpad"
         ],
         "bom": [
             {"Alkatrész / Anyag": "ESP32-WROOM-32E modul", "Mennyiség": "1 db", "Beszerzési Hely": "TME Magyarország", "Becsült Ár (HUF)": 1478},
@@ -61,10 +73,23 @@ prototypes = {
         "overview": "Körforgásos alapanyagból készült, kizárólag olajat és szénhidrogén alapú folyadékokat magába szívó, de a vizet taszító ipari párna/lap.",
         "image_url": "https://images.unsplash.com/photo-1581092335397-9583fe92d232?q=80&w=800&auto=format&fit=crop",
         "exploded": [
-            "LÉREG 1: Perforált védő külső háló (bioműanyag vagy tartós háló)",
-            "LÉREG 2: Magas olajfelvevő képességű tisztított gyapjú / kender rostmag",
-            "LÉREG 3: Hidrofób (vízlepergető) felületi biológiai impregnáló réteg",
-            "LÉREG 4: Peremezett, összefogott zárás"
+            "RÉTEG 1: Perforált védő külső háló (bioműanyag vagy tartós háló)",
+            "RÉTEG 2: Magas olajfelvevő képességű tisztított gyapjú / kender rostmag",
+            "RÉTEG 3: Hidrofób (vízlepergető) felületi biológiai impregnáló réteg",
+            "RÉTEG 4: Peremezett, összefogott zárás"
+        ],
+        "manufacturing_steps": [
+            "1. Gyapjú és textilhulladék tisztítása és mechanikai aprítása.",
+            "2. Rostok szálorientálása és egyenletes terítése formába.",
+            "3. Hidrofób biológiai impregnáló szer permetezése a rostokra.",
+            "4. Melegpréselés lappréssel a kívánt sűrűség és vastagság eléréséhez.",
+            "5. Méretre vágás, peremezés és csomagolás."
+        ],
+        "required_machines": [
+            "Rostaprító gép",
+            "Kézi vagy pneumatikus lapprés",
+            "Permetező / impregnáló egység",
+            "Vágószerszámok"
         ],
         "bom": [
             {"Alkatrész / Anyag": "Tisztított gyapjú / kender hulladék", "Mennyiség": "300 g", "Beszerzési Hely": "Helyi gyapjútermelők / textilmaradék", "Becsült Ár (HUF)": 400},
@@ -86,11 +111,23 @@ prototypes = {
         "overview": "Egyesíti a hőkamerát, a pára-, CO₂- és hőmérséklet-szenzorokat, hogy pontosan megmondja az épület tulajdonosának, hol szökik a pénze.",
         "image_url": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop",
         "exploded": [
-            "LÉREG 1: Ergonomikus kézi pisztolyváz (3D nyomtatott - Bambu A1)",
-            "LÉREG 2: MLX90640 hőkamera szenzor modul",
-            "LÉREG 3: DHT22 pára- és hőmérséklet-szenzor",
-            "LÉREG 4: ESP32 mikrokontroller + OLED / TFT színes kijelző",
-            "LÉREG 5: Újratölthető Li-Ion akkumulátor egység"
+            "RÉTEG 1: Ergonomikus kézi pisztolyváz (3D nyomtatott - Bambu A1)",
+            "RÉTEG 2: MLX90640 hőkamera szenzor modul",
+            "RÉTEG 3: DHT22 pára- és hőmérséklet-szenzor",
+            "RÉTEG 4: ESP32 mikrokontroller + OLED / TFT színes kijelző",
+            "RÉTEG 5: Újratölthető Li-Ion akkumulátor egység"
+        ],
+        "manufacturing_steps": [
+            "1. Ergonomikus pisztolyváz nyomtatása Bambu A1 3D nyomtatón (PETG filament).",
+            "2. MLX90640 hőkamera és kijelző csatlakoztatása az ESP32 alaplaphoz.",
+            "3. Akkumulátor töltő áramkör bekötése és beépítése a vázba.",
+            "4. Hőmérséklet- és energiakalkulációs szoftver / firmware telepítése.",
+            "5. Kalibrálási teszt fekete test forrás ellenőrzésével."
+        ],
+        "required_machines": [
+            "Bambu Lab A1 3D nyomtató",
+            "Forrasztóállomás",
+            "Csavarhúzó szett és tesztpad"
         ],
         "bom": [
             {"Alkatrész / Anyag": "MLX90640 Hőkamera modul", "Mennyiség": "1 db", "Beszerzési Hely": "Elektronikai webshop / TME", "Becsült Ár (HUF)": 12500},
@@ -113,11 +150,24 @@ prototypes = {
         "overview": "Nem olcsó szivacs, hanem magas sűrűségű természetes rost és mikroperforált réteg kombinációja, amely dizájnelemként is megállja a helyét.",
         "image_url": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop",
         "exploded": [
-            "LÉREG 1: Dekoratív, akusztikusan áteresztő külső textil borítás",
-            "LÉREG 2: Mikroperforált elülső hangtörő réteg",
-            "LÉREG 3: Nagy sűrűségű kárdírozott gyapjú/kender akusztikai mag",
-            "LÉREG 4: Légrés a hátoldalon a mélyebb frekvenciák elnyeléséhez",
-            "LÉREG 5: Merev hátfal és fali rögzítő konzol"
+            "RÉTEG 1: Dekoratív, akusztikusan áteresztő külső textil borítás",
+            "RÉTEG 2: Mikroperforált elülső hangtörő réteg",
+            "RÉTEG 3: Nagy sűrűségű kárdírozott gyapjú/kender akusztikai mag",
+            "RÉTEG 4: Légrés a hátoldalon a mélyebb frekvenciák elnyeléséhez",
+            "RÉTEG 5: Merev hátfal és fali rögzítő konzol"
+        ],
+        "manufacturing_steps": [
+            "1. Gyapjú és kender rostok kárdírozása (szálorientálás).",
+            "2. Keret összeállítása lapszabászati elemekből.",
+            "3. Rostmag elhelyezése a keretben melegpréseléssel.",
+            "4. Mikroperforált lemez és dekoratív textil feszítése a keretre.",
+            "5. Minőségellenőrzés és hátoldali rögzítők felszerelése."
+        ],
+        "required_machines": [
+            "Lapszabász eszközök / asztalos szerszámok",
+            "Kárdírozógép",
+            "Lapprés",
+            "Tűzőgép / textilrögzítő"
         ],
         "bom": [
             {"Alkatrész / Anyag": "Nyers gyapjú / kender rost", "Mennyiség": "1,5 kg", "Beszerzési Hely": "Helyi rostkereskedő", "Becsült Ár (HUF)": 1200},
@@ -156,18 +206,29 @@ with col2:
     st.markdown("### 🧱 Robbantott Műszaki Szerkezet (Rétegrend)")
     st.write("A fizikai prototípus rétegei és komponensei felülről lefelé / külső burkolattól a magig:")
     for layer in p_data["exploded"]:
-        st.markdown(f'<div class="exploded-layer">⚙️ {layer}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="step-box">⚙️ {layer}</div>', unsafe_allow_html=True)
 
 st.write("---")
 
-# Fülek a részletes adatokhoz
-tab1, tab2, tab3 = st.tabs([
+# Fülek a részletes adatokhoz (belelépve a gyártási folyamatba is)
+tab1, tab2, tab3, tab4 = st.tabs([
+    "⚙️ Gyártási Folyamat & Technológia",
     "📦 Tételes BOM & Költségek", 
     "🎯 Célpiac & Első Vevők", 
     "⚔️ Konkurencia Elemzés"
 ])
 
 with tab1:
+    st.markdown("### 🛠️ Lépésről Lépésre Követhető Gyártási Folyamat")
+    st.write("A garázs-műhelyben történő összeszerelés és előállítás fázisai:")
+    for step in p_data["manufacturing_steps"]:
+        st.markdown(f'<div class="step-box">📌 {step}</div>', unsafe_allow_html=True)
+    
+    st.markdown("### 🧰 Szükséges Gépek és Szerszámok")
+    for machine in p_data["required_machines"]:
+        st.markdown(f"- 🔧 {machine}")
+
+with tab2:
     st.markdown("### 📋 Tételes BOM (Bill of Materials) - Prototípus Szint")
     st.write(f"**Összesített becsült prototípus anyagköltség:** {p_data['total_cost']}")
     
@@ -176,17 +237,17 @@ with tab1:
     
     st.markdown("""
     <div class="highlight">
-    <b>Beszerzési Tipp:</b> Az elektronikai alkatrészekhez a <b>TME Magyarország</b>, a 3D nyomtatáshoz a <b>3DJake</b> ajánlott, míg a rost- és alapanyagok helyi termelőktől vagy fatelepekről szerezhetők be legolcsóbban.
+    <b>Beszerzési Tipp:</b> Az elektronikai alkatrészekhez a <b>TME Magyarország</b>, a 3D nyomtatáshoz a <b>3DJake</b> ajánlott, míg a rost- és alapanyagok helyi termelőktől vagy fatelepektől szerezhetők be legolcsóbban.
     </div>
     """, unsafe_allow_html=True)
 
-with tab2:
+with tab3:
     st.markdown("### 🎯 Ki veszi meg? (Célpiac & Vevői Profil)")
     st.write("A GUME által azonosított elsődleges fizető vevők és szegmensek:")
     for buyer in p_data["target_buyers"]:
         st.markdown(f"- 👤 **{buyer}**")
 
-with tab3:
+with tab4:
     st.markdown("### ⚔️ Piaci Konkurencia & Versenytársak Eszközei")
     for comp in p_data["competitors"]:
         st.markdown(f"""
@@ -198,4 +259,4 @@ with tab3:
         """, unsafe_allow_html=True)
 
 st.markdown("---")
-st.success("✨ Másold be ezt a frissített kódot a GitHub repódban lévő `app.py`-ba, és a Streamlit felületen máris megjelennek a termékfotók és a robbantott műszaki rétegábrák egymás mellett! Mi legyen a következő lépés?")
+st.success("✨ Másold be ezt az új, teljesen kibővített kódot a GitHub repódban lévő `app.py`-ba! Ekkor már a termékfotó és a robbantott rétegábra mellett egy külön füvön (Gyártási Folyamat & Technológia) a pontos gyártási lépések és a szükséges gépek is listázva lesznek.")
