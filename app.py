@@ -5,7 +5,7 @@ import numpy as np
 
 # --- Oldal konfiguráció ---
 st.set_page_config(
-    page_title="FUTUREVERSION & GUME - Prototípus & Piaci Intelligencia Motor",
+    page_title="FUTUREVERSION & GUME - Prototípus & Vizuális Labor",
     page_icon="⚙️",
     layout="wide"
 )
@@ -16,26 +16,27 @@ st.markdown("""
     .main-title { font-size: 2.2rem; font-weight: bold; color: #1E3A8A; margin-bottom: 0px; }
     .sub-title { font-size: 1.1rem; color: #4B5563; margin-bottom: 20px; }
     .card { background-color: #F8FAFC; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #2563EB; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .bom-table { width: 100%; border-collapse: collapse; }
-    .highlight { background-color: #EFF6FF; padding: 15px; border-radius: 8px; border: 1px solid #BFDBFE; margin-top: 10px; }
+    .exploded-layer { background-color: #EFF6FF; padding: 10px 15px; border-radius: 6px; border: 1px solid #BFDBFE; margin-bottom: 8px; font-family: monospace; }
+    .highlight { background-color: #FEF3C7; padding: 15px; border-radius: 8px; border: 1px solid #FCD34D; margin-top: 10px; }
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-title">⚙️ FUTUREVERSION Garázs Labor & Piaci Intelligencia Motor</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Robbantott műszaki tervek, tételes BOM, célcsoport-elemzés és konkurens-analízis a GUME top prototípusaihoz</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">⚙️ FUTUREVERSION Vizuális Garázs Labor & Műszaki Tervtár</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Robbantott műszaki rajzok, kész termékek fotói, tételes BOM és konkurens-analízis</div>', unsafe_allow_html=True)
 st.write("---")
 
-# --- Prototípus Adatbázis ---
+# --- Prototípus Adatbázis Képekkel és Vizuális Adatokkal ---
 prototypes = {
     "1. Farm Water Intelligence (IoT & Ag-SaaS)": {
         "tagline": "Intelligens öntözés-vezérlő szenzorhálózat + GUME meteorológiai predikció",
         "overview": "Nem egyszerű talajnedvességmérő. Az eszköz a helyi talajadatokat a GUME globális időjárási és párolgási adataival kombinálva kiszámolja, hogy mikor és mennyi vizet kell kijuttatni.",
+        "image_url": "https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=800&auto=format&fit=crop",
         "exploded": [
-            "1. Külső UV-álló időjárásálló ház (ASA filament, 3D nyomtatva - Bambu A1)",
-            "2. Napelemes tápegység + LiFePO4 akkumulátor modul",
-            "3. ESP32-WROOM-32E mikrokontroller & LoRa/Wi-Fi modul",
-            "4. Kapacitív talajnedvesség- és hőmérséklet-szenzor szúrótüske",
-            "5. Opcionális motoros szelep vezérlő relé kimenet"
+            "LÉREG 1: Külső UV-álló időjárásálló ház (ASA filament, 3D nyomtatva - Bambu A1)",
+            "LÉREG 2: Napelemes tápegység + LiFePO4 akkumulátor modul",
+            "LÉREG 3: ESP32-WROOM-32E mikrokontroller & LoRa/Wi-Fi adómodul",
+            "LÉREG 4: Kapacitív talajnedvesség- és hőmérséklet-szenzor szúrótüske",
+            "LÉREG 5: Opcionális motoros szelep vezérlő relé kimenet"
         ],
         "bom": [
             {"Alkatrész / Anyag": "ESP32-WROOM-32E modul", "Mennyiség": "1 db", "Beszerzési Hely": "TME Magyarország", "Becsült Ár (HUF)": 1478},
@@ -58,11 +59,12 @@ prototypes = {
     "2. OilNest (Olaj- és Folyadékfelvevő Rost)": {
         "tagline": "Helyi gyapjúból és növényi rostból préselt hidrofób olajfelvevő lap gépműhelyek számára",
         "overview": "Körforgásos alapanyagból készült, kizárólag olajat és szénhidrogén alapú folyadékokat magába szívó, de a vizet taszító ipari párna/lap.",
+        "image_url": "https://images.unsplash.com/photo-1581092335397-9583fe92d232?q=80&w=800&auto=format&fit=crop",
         "exploded": [
-            "1. Perforált védő külső háló (bioműanyag vagy tartós háló)",
-            "2. Magas olajfelvevő képességű tisztított gyapjú / kender rostmag",
-            "3. Hidrofób (vízlepergető) felületi biológiai impregnáló réteg",
-            "4. Peremezett, összefogott zárás"
+            "LÉREG 1: Perforált védő külső háló (bioműanyag vagy tartós háló)",
+            "LÉREG 2: Magas olajfelvevő képességű tisztított gyapjú / kender rostmag",
+            "LÉREG 3: Hidrofób (vízlepergető) felületi biológiai impregnáló réteg",
+            "LÉREG 4: Peremezett, összefogott zárás"
         ],
         "bom": [
             {"Alkatrész / Anyag": "Tisztított gyapjú / kender hulladék", "Mennyiség": "300 g", "Beszerzési Hely": "Helyi gyapjútermelők / textilmaradék", "Becsült Ár (HUF)": 400},
@@ -82,16 +84,17 @@ prototypes = {
     "3. Energy Loss Scanner (Hőveszteség Audit Szett)": {
         "tagline": "Hordozható multi-szenzoros audit eszköz kisüzemek, raktárak és épületek energia-megtakarításához",
         "overview": "Egyesíti a hőkamerát, a pára-, CO₂- és hőmérséklet-szenzorokat, hogy pontosan megmondja az épület tulajdonosának, hol szökik a pénze.",
+        "image_url": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop",
         "exploded": [
-            "1. Ergonomikus kézi pisztolyváz (3D nyomtatott - Bambu A1)",
-            "2. MLX90640 hőkamera szenzor modul",
-            "3. DHT22 pára- és hőmérséklet-szenzor",
-            "4. ESP32 mikrokontroller + OLED / TFT színes kijelző",
-            "5. Újratölthető Li-Ion akkumulátor egység"
+            "LÉREG 1: Ergonomikus kézi pisztolyváz (3D nyomtatott - Bambu A1)",
+            "LÉREG 2: MLX90640 hőkamera szenzor modul",
+            "LÉREG 3: DHT22 pára- és hőmérséklet-szenzor",
+            "LÉREG 4: ESP32 mikrokontroller + OLED / TFT színes kijelző",
+            "LÉREG 5: Újratölthető Li-Ion akkumulátor egység"
         ],
         "bom": [
             {"Alkatrész / Anyag": "MLX90640 Hőkamera modul", "Mennyiség": "1 db", "Beszerzési Hely": "Elektronikai webshop / TME", "Becsült Ár (HUF)": 12500},
-            {"Alkatrész / Anyag": "ESP32 mikrokontroller + TFT kijelző", "Mennyiség": "1 szett", "Beszerzési HUF": "TME / 3DJake", "Becsült Ár (HUF)": 4500},
+            {"Alkatrész / Anyag": "ESP32 mikrokontroller + TFT kijelző", "Mennyiség": "1 szett", "Beszerzési Hely": "TME / 3DJake", "Becsült Ár (HUF)": 4500},
             {"Alkatrész / Anyag": "PETG Filament a vázhoz", "Mennyiség": "150 g", "Beszerzési Hely": "3DJake Magyarország", "Becsült Ár (HUF)": 1200},
             {"Alkatrész / Anyag": "Akkumulátor és töltő áramkör", "Mennyiség": "1 szett", "Beszerzési Hely": "Elektronikai alkatrészbolt", "Becsült Ár (HUF)": 1800}
         ],
@@ -108,12 +111,13 @@ prototypes = {
     "4. AcousticWool (Designer Akusztikai Panel)": {
         "tagline": "Prémium megjelenésű, gyapjúalapú hangelnyelő panel otthoni stúdiókhoz és irodákhoz",
         "overview": "Nem olcsó szivacs, hanem magas sűrűségű természetes rost és mikroperforált réteg kombinációja, amely dizájnelemként is megállja a helyét.",
+        "image_url": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop",
         "exploded": [
-            "1. Dekoratív, akusztikusan áteresztő külső textil borítás",
-            "2. Mikroperforált elülső hangtörő réteg",
-            "3. Nagy sűrűségű kárdírozott gyapjú/kender akusztikai mag",
-            "4. Légrés a hátoldalon a mélyebb frekvenciák elnyeléséhez",
-            "5. Merev hátfal és fali rögzítő konzol"
+            "LÉREG 1: Dekoratív, akusztikusan áteresztő külső textil borítás",
+            "LÉREG 2: Mikroperforált elülső hangtörő réteg",
+            "LÉREG 3: Nagy sűrűségű kárdírozott gyapjú/kender akusztikai mag",
+            "LÉREG 4: Légrés a hátoldalon a mélyebb frekvenciák elnyeléséhez",
+            "LÉREG 5: Merev hátfal és fali rögzítő konzol"
         ],
         "bom": [
             {"Alkatrész / Anyag": "Nyers gyapjú / kender rost", "Mennyiség": "1,5 kg", "Beszerzési Hely": "Helyi rostkereskedő", "Becsült Ár (HUF)": 1200},
@@ -141,27 +145,29 @@ st.markdown(f"> *{p_data['tagline']}*")
 st.write(p_data['overview'])
 st.write("---")
 
+# Kétoszlopos elrendezés a vizuális bemutatáshoz
+col1, col2 = st.columns([1, 1])
+
+with col1:
+    st.markdown("### 📸 Kész Termék / Prototípus Vizuális Kép")
+    st.image(p_data["image_url"], caption=f"{selected_proj} - Illusztrált kész termék nézet", use_container_width=True)
+
+with col2:
+    st.markdown("### 🧱 Robbantott Műszaki Szerkezet (Rétegrend)")
+    st.write("A fizikai prototípus rétegei és komponensei felülről lefelé / külső burkolattól a magig:")
+    for layer in p_data["exploded"]:
+        st.markdown(f'<div class="exploded-layer">⚙️ {layer}</div>', unsafe_allow_html=True)
+
+st.write("---")
+
 # Fülek a részletes adatokhoz
-tab1, tab2, tab3, tab4 = st.tabs([
-    "🛠️ Robbantott Szerkezet", 
+tab1, tab2, tab3 = st.tabs([
     "📦 Tételes BOM & Költségek", 
     "🎯 Célpiac & Első Vevők", 
     "⚔️ Konkurencia Elemzés"
 ])
 
 with tab1:
-    st.markdown("### 🧱 Robbantott Műszaki Szerkezet (Rétegrend)")
-    st.write("A prototípus fizikai felépítése alulról felfelé / kívülről befelé:")
-    for layer in p_data["exploded"]:
-        st.markdown(f"- ✅ {layer}")
-    
-    st.markdown("""
-    <div class="highlight">
-    <b>Garázs Gyártási Tipp:</b> Az első prototípusok 3D nyomtatott házzal (Bambu A1, PETG vagy ASA anyagból) és kézi összeszereléssel készülnek. A végleges sorozatgyártásnál átállhatunk fröccsöntésre.
-    </div>
-    """, unsafe_allow_html=True)
-
-with tab2:
     st.markdown("### 📋 Tételes BOM (Bill of Materials) - Prototípus Szint")
     st.write(f"**Összesített becsült prototípus anyagköltség:** {p_data['total_cost']}")
     
@@ -169,22 +175,18 @@ with tab2:
     st.dataframe(bom_df, use_container_width=True, hide_index=True)
     
     st.markdown("""
-    *Megjegyzés: Az árak nettó beszerzési árak magyarországi és európai beszállítóktól (pl. TME, 3DJake, AliExpress) kis tételes (1 db-os prototípus) megrendelés esetén.*
-    """)
+    <div class="highlight">
+    <b>Beszerzési Tipp:</b> Az elektronikai alkatrészekhez a <b>TME Magyarország</b>, a 3D nyomtatáshoz a <b>3DJake</b> ajánlott, míg a rost- és alapanyagok helyi termelőktől vagy fatelepekről szerezhetők be legolcsóbban.
+    </div>
+    """, unsafe_allow_html=True)
 
-with tab3:
+with tab2:
     st.markdown("### 🎯 Ki veszi meg? (Célpiac & Vevői Profil)")
     st.write("A GUME által azonosított elsődleges fizető vevők és szegmensek:")
     for buyer in p_data["target_buyers"]:
         st.markdown(f"- 👤 **{buyer}**")
 
-    st.markdown("""
-    <div class="highlight">
-    <b>Értékajánlat (Value Proposition):</b> Nem magát az eszközt adjuk el, hanem a problémából fakadó megtakarítást (pl. megspórolt víz, elkerült termésveszteség, olcsóbb energiafelhasználás).
-    </div>
-    """, unsafe_allow_html=True)
-
-with tab4:
+with tab3:
     st.markdown("### ⚔️ Piaci Konkurencia & Versenytársak Eszközei")
     for comp in p_data["competitors"]:
         st.markdown(f"""
@@ -196,4 +198,4 @@ with tab4:
         """, unsafe_allow_html=True)
 
 st.markdown("---")
-st.success("🚀 Ez a modul azonnal használható a GitHub repóba feltöltve a Streamlit felületén! Válassz másik projektet a bal oldali sávból a részletek megtekintéséhez.")
+st.success("✨ Másold be ezt a frissített kódot a GitHub repódban lévő `app.py`-ba, és a Streamlit felületen máris megjelennek a termékfotók és a robbantott műszaki rétegábrák egymás mellett! Mi legyen a következő lépés?")
